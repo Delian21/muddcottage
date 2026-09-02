@@ -6,7 +6,7 @@ A modern static website for **Mudd Cottage Herbhome** — herbal teas, remedies,
 
 ## About
 
-Mudd Cottage Herbhome is a herbal wellness brand based in Owerri, Imo State, Nigeria. The site showcases their services, shares educational blog content, and makes it easy for visitors to get in touch via WhatsApp or a contact form.
+Mudd Cottage Herbhome is a herbal wellness brand based in Aboh-Mbiase, Owerri, Imo State, Nigeria. The site showcases their services, shares educational blog content, and makes it easy for visitors to get in touch via WhatsApp or a contact form.
 
 ## Pages
 
@@ -70,22 +70,8 @@ muddcottage/
 └── admin/                  # Decap CMS config (optional)
 ```
 
-## Deployment
-
-This site is connected to GitHub and auto-deploys via Netlify.
-
-To make changes:
-
-```bash
-git add .
-git commit -m "what you changed"
-git push
-```
-
-Netlify rebuilds and deploys within 1–2 minutes.
-
 ## Contact
 
 - **WhatsApp:** +234 802 802 7119 / +234 803 476 9497
 - **Email:** muddcottage1@gmail.com
-- **Location:** Obokwe Obetiti, Trans-Amadi Bus-stop, Owerri, Imo State, Nigeria
+- **Location:** Obokwe Obetiti, Trans-Amadi Bus-stop, Aboh-Mbiase, Owerri, Imo State, Nigeria
