@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "why-herbs-still-work",
+    "title": "Why Herbs Still Work in a World of Pharmaceuticals",
+    "date": "2026-08-15",
+    "category": "Herbal Medicine",
+    "description": "For centuries, communities relied on plants for healing. Modern science is now catching up — validating what traditional healers have known all along.",
+    "image": "../images/herbs1.jpg",
+    "readTime": "5 min read"
+  },
+  {
+    "slug": "common-herbs-every-home",
+    "title": "5 Common Herbs Every Nigerian Home Should Have",
+    "date": "2026-08-28",
+    "category": "Wellness",
+    "description": "From bitter leaf to moringa, these everyday plants pack surprising healing power. Here's how to use them safely and effectively.",
+    "image": "../images/herbs2.jpg",
+    "readTime": "6 min read"
+  },
+  {
+    "slug": "sleep-naturally",
+    "title": "Sleep Naturally: Herbs That Actually Help You Rest",
+    "date": "2026-09-01",
+    "category": "Remedies",
+    "description": "Insomnia doesn't always need pills. Certain herbal blends calm the nervous system and promote deep, restorative sleep — without the side effects.",
+    "image": "../images/herbs3.jpg",
+    "readTime": "4 min read"
+  }
+]

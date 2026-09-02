@@ -1,0 +1,35 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+slug:
+  encoding: "ascii"
+  clean_accents: true
+  sanitize_replacement: "-"
+
+collections:
+  - name: "blog"
+    label: "Blog Posts"
+    folder: "blog/posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    format: "yaml"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Publish Date", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
+      - { label: "Category", name: "category", widget: "select", options:
+          - { label: "Herbal Medicine", value: "Herbal Medicine" }
+          - { label: "Wellness", value: "Wellness" }
+          - { label: "Remedies", value: "Remedies" }
+          - { label: "Lifestyle", value: "Lifestyle" }
+          - { label: "Tips", value: "Tips" }
+        }
+      - { label: "Featured Image", name: "thumbnail", widget: "image", required: true }
+      - { label: "Description", name: "description", widget: "text", pattern: [".{0,160}", "Description must be 160 characters or less"] }
+      - { label: "Read Time", name: "readTime", widget: "string", default: "5 min read" }
+      - { label: "Body", name: "body", widget: "markdown" }
+      - { label: "CTA Heading", name: "cta_heading", widget: "string", default: "Have a question about herbs?" }
+      - { label: "CTA Text", name: "cta_text", widget: "string", default: "We're always happy to help. Reach out anytime." }
