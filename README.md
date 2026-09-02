@@ -1,84 +1,91 @@
-# Mudd Cottage Herbhome – Static Website
+# Mudd Cottage Herbhome
 
-A standalone, secure, modern website for **Mudd Cottage Herbhome** — replacing the previous WordPress installation.
+A modern static website for **Mudd Cottage Herbhome** — herbal teas, remedies, and wellness guidance rooted in tradition.
 
-## Why Static?
+**Live site:** [muddcottage.netlify.app](https://muddcottage.netlify.app)
 
-- **🔒 Secure by design** — No database, no login panel, no PHP, no plugins to exploit
-- **⚡ Fast** — Static HTML loads instantly, no server-side processing
-- **💰 Free hosting** — Deploy to GitHub Pages, Netlify, Vercel, or any web host
-- **🛡️ No maintenance** — No WordPress updates, no plugin patches, no security holes
+## About
+
+Mudd Cottage Herbhome is a herbal wellness brand based in Owerri, Imo State, Nigeria. The site showcases their services, shares educational blog content, and makes it easy for visitors to get in touch via WhatsApp or a contact form.
 
 ## Pages
 
 | Page | File | Description |
 |------|------|-------------|
-| Home | `index.html` | Hero, story, services, testimonials, contact form |
-| About | `about.html` | Full story, team, focus areas, testimonial |
-| Services | `services.html` | Detailed offerings, how it works, 15% off CTA |
+| Home | `index.html` | Hero, story, services, testimonials, trust bar |
+| About | `about.html` | Full story, team, focus areas, testimonials |
+| Services | `services.html` | Offerings, how it works, CTA |
+| Blog | `blog.html` | Herbal wellness articles |
+| Videos | `videos.html` | Embedded video content |
 | Contact | `contact.html` | Contact form, FAQ, WhatsApp integration |
+
+## Blog Posts
+
+| Post | File |
+|------|------|
+| Common Herbs Every Home Should Have | `blog/common-herbs-every-home.html` |
+| Sleep Naturally with Herbal Remedies | `blog/sleep-naturally.html` |
+| Why Herbs Still Work | `blog/why-herbs-still-work.html` |
 
 ## Features
 
 - 🌿 Nature-inspired green/cream color theme
 - 📱 Fully responsive (mobile, tablet, desktop)
-- 💬 WhatsApp integration throughout (floating button + form)
+- 💬 WhatsApp integration throughout (floating button + contact links)
 - ✨ Scroll animations (Intersection Observer API)
 - 🎯 SEO meta tags on every page
-- 📊 Animated counters for trust bar
+- 📊 Animated counters on trust bar
 - 🍔 Mobile hamburger navigation
+- 📝 Blog with JSON-based post management
 
-## Setup
+## Tech Stack
 
-1. **Update the WhatsApp number** — Replace all instances of `2348100000000` with your actual number
-2. **Update the email** — Replace `hello@muddcottage.com.ng` in contact.html
-3. **Add real images** — Replace the placeholder divs with actual images:
-   - Hero image on `index.html`
-   - About image on `about.html`
-   - Add your logo as an `<img>` tag
-4. **Update social links** — Replace `#` placeholders in the footer with actual URLs
-
-## Deploy
-
-### Option 1: GitHub Pages (Free)
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-git remote add origin https://github.com/yourusername/muddcottage.git
-git push -u origin main
-```
-Then enable GitHub Pages in repo settings.
-
-### Option 2: Netlify (Free)
-Drag and drop the project folder to [app.netlify.com/drop](https://app.netlify.com/drop)
-
-### Option 3: Any Web Host
-Upload all files via FTP/cPanel to your hosting provider's public_html directory.
+- **HTML/CSS/JS** — no frameworks, no build tools
+- **Netlify** — auto-deploys on push to `main`
+- **GitHub** — version control
 
 ## File Structure
 
 ```
 muddcottage/
-├── index.html          # Homepage
-├── about.html          # About page
-├── services.html       # Services page
-├── contact.html        # Contact page
+├── index.html              # Homepage
+├── about.html              # About page
+├── services.html           # Services page
+├── contact.html            # Contact page
+├── blog.html               # Blog listing
+├── videos.html             # Videos page
+├── sitemap.xml             # SEO sitemap
 ├── css/
-│   └── style.css       # Main stylesheet
+│   └── style.css           # Main stylesheet
 ├── js/
-│   └── main.js         # JavaScript (animations, nav, form)
-└── README.md           # This file
+│   ├── main.js             # Animations, nav, form handling
+│   └── blog.js             # Blog post rendering
+├── blog/
+│   ├── posts.json          # Blog post metadata
+│   ├── template.html       # Blog post template
+│   ├── common-herbs-every-home.html
+│   ├── sleep-naturally.html
+│   └── why-herbs-still-work.html
+├── images/                 # Site images and assets
+└── admin/                  # Decap CMS config (optional)
 ```
 
-## Security Improvements Over WordPress
+## Deployment
 
-| Vulnerability | WordPress | This Site |
-|--------------|-----------|-----------|
-| User enumeration | ❌ Exposed | ✅ N/A (no users) |
-| Login brute force | ❌ /wp-login.php | ✅ N/A (no login) |
-| XML-RPC attacks | ❌ Active | ✅ N/A (no PHP) |
-| Plugin exploits | ❌ 15+ plugins | ✅ N/A (no plugins) |
-| Database injection | ❌ Possible | ✅ N/A (no database) |
-| RSS username leak | ❌ admin exposed | ✅ N/A (no CMS) |
-| Version disclosure | ❌ WP 7.1 shown | ✅ N/A (no version) |
+This site is connected to GitHub and auto-deploys via Netlify.
+
+To make changes:
+
+```bash
+git add .
+git commit -m "what you changed"
+git push
+```
+
+Netlify rebuilds and deploys within 1–2 minutes.
+
+## Contact
+
+- **WhatsApp:** +234 802 802 7119 / +234 803 476 9497
+- **Email:** muddcottage1@gmail.com
+- **Location:** Obokwe Obetiti, Trans-Amadi Bus-stop, Owerri, Imo State, Nigeria
