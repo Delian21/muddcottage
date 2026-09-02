@@ -766,12 +766,12 @@ nav a:hover::after, nav a.active::after { width: 100%; }
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: var(--green-pale);
+  background: var(--green-mid);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.1rem;
-  color: var(--green-mid);
+  color: var(--text-white);
   font-weight: 700;
   border: 2px solid var(--green-pale);
 }
