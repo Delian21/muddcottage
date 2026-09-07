@@ -17,18 +17,25 @@ collections:
     folder: "blog/posts"
     create: true
     slug: "{{slug}}"
-    format: "md"
+    format: "frontmatter"
     extension: "md"
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Publish Date", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
-      - { label: "Category", name: "category", widget: "select", options:
-          - { label: "Herbal Medicine", value: "Herbal Medicine" }
-          - { label: "Wellness", value: "Wellness" }
-          - { label: "Remedies", value: "Remedies" }
-          - { label: "Lifestyle", value: "Lifestyle" }
-          - { label: "Tips", value: "Tips" }
-        }
+      - label: "Category"
+        name: "category"
+        widget: "select"
+        options:
+          - label: "Herbal Medicine"
+            value: "Herbal Medicine"
+          - label: "Wellness"
+            value: "Wellness"
+          - label: "Remedies"
+            value: "Remedies"
+          - label: "Lifestyle"
+            value: "Lifestyle"
+          - label: "Tips"
+            value: "Tips"
       - { label: "Featured Image", name: "thumbnail", widget: "image", required: true }
       - { label: "Description", name: "description", widget: "text", pattern: [".{0,160}", "Description must be 160 characters or less"] }
       - { label: "Read Time", name: "readTime", widget: "string", default: "5 min read" }
