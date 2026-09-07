@@ -300,6 +300,11 @@ p { color: var(--text-mid); font-size: 1rem; line-height: 1.8; }
   box-shadow: 0 8px 25px rgba(0,0,0,0.15);
 }
 
+/* ===== Netlify Identity login dialog (must sit above the fixed header) ===== */
+#netlify-identity-widget {
+  z-index: 100000 !important;
+}
+
 /* ===== Header / Navigation ===== */
 header {
   position: fixed;
