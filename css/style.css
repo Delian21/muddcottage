@@ -97,8 +97,8 @@ i[data-lucide] {
 }
 
 .whatsapp-float svg {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   fill: white;
   transition: transform var(--transition);
 }
@@ -1691,8 +1691,8 @@ footer {
   position: fixed;
   bottom: 100px;
   right: 28px;
-  width: 64px;
-  height: 64px;
+  width: 56px;
+  height: 56px;
   background: #5c6b58;
   border-radius: 50%;
   display: flex;
@@ -1758,6 +1758,15 @@ footer {
   nav a:hover, nav a.active { color: var(--green-mid) !important; }
   .mobile-toggle { display: flex; z-index: 1001; }
   .mobile-toggle span { background: var(--text-dark) !important; }
+
+  /* WhatsApp float: hovers just above the bottom, level with the footer social icons */
+  .whatsapp-float {
+    bottom: 20px;
+    right: 0;
+    width: 52px;
+    height: 52px;
+  }
+  .whatsapp-float svg { width: 22px; height: 22px; }
   nav .logo-text { color: var(--text-dark) !important; }
   nav .logo-text span { color: var(--green-mid) !important; }
   nav .btn-whatsapp {
