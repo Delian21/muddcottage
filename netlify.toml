@@ -1,0 +1,6 @@
+# Netlify build configuration for Mudd Cottage Herbhome
+# The blog posts live as markdown files in blog/posts/. This script converts
+# them into blog/posts.json and one HTML page per post before deploying.
+[build]
+  command = "node scripts/build-blog.js"
+  publish = "."

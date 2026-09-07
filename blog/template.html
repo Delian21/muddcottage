@@ -1,41 +1,11 @@
-<!-- 
-  ============================================================
-  BLOG POST TEMPLATE FOR MUDD COTTAGE HERBHOME
-  ============================================================
-  
-  HOW TO CREATE A NEW BLOG POST:
-  
-  1. Copy this file and rename it (e.g. "my-new-post.html")
-  2. Update the <title> tag at the top
-  3. Update the <meta description>
-  4. Update the blog post tag, title, date, and read time
-  5. Replace the hero image with your own (put it in the images/ folder)
-  6. Write your article content in the blog-post-content section
-  7. Update the CTA section at the bottom
-  8. Save the file in the blog/ folder
-  
-  THEN add it to the blog listing:
-  
-  9. Open blog.html
-  10. Copy one of the existing blog-card blocks
-  11. Update the link, image, tag, date, title, and description
-  12. Save blog.html
-  
-  DONE! Your new post is live.
-  ============================================================
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- STEP 1: Update title -->
-  <title>Your Blog Post Title – Mudd Cottage Herbhome</title>
-  
-  <!-- STEP 2: Update description (shown in Google search results) -->
-  <meta name="description" content="A brief summary of your blog post for search engines.">
-  
+  <title>{{title}} – Mudd Cottage Herbhome</title>
+  <meta name="description" content="{{description}}">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Arapey:ital@0;1&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
@@ -45,14 +15,14 @@
 </head>
 <body>
 
-  <!-- ===== HEADER (don't change) ===== -->
+  <!-- ===== HEADER ===== -->
   <header id="header">
     <div class="container">
       <a href="../index.html" class="logo">
         <img src="../images/logo.png" alt="Mudd Cottage Herbhome" class="logo-icon" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
         <div class="logo-text">Mudd Cottage<span> Herbhome</span></div>
       </a>
-      
+
       <nav id="nav">
         <a href="../index.html">Home</a>
         <a href="../about.html">About</a>
@@ -61,7 +31,7 @@
         <a href="../contact.html">Contact</a>
         <a href="https://wa.me/2348028027119?text=Hello%20Mudd%20Cottage%2C%20I%27d%20like%20to%20know%20more" class="btn btn-whatsapp nav-cta" target="_blank" rel="noopener"><i data-lucide="message-circle" style="width:18px;height:18px;"></i> WhatsApp Us</a>
       </nav>
-      
+
       <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
         <span></span><span></span><span></span>
       </button>
@@ -71,58 +41,33 @@
   <!-- ===== ARTICLE ===== -->
   <article class="blog-post">
     <div class="container">
-      
-      <!-- STEP 3: Update tag, title, date, and read time -->
       <div class="blog-post-header fade-up">
         <a href="../blog.html" class="blog-post-back"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i> Back to Blog</a>
-        <span class="blog-post-tag">Your Category</span>  <!-- e.g. Herbal Medicine, Wellness, Remedies -->
-        <h1>Your Blog Post Title Here</h1>
+        <span class="blog-post-tag">{{category}}</span>
+        <h1>{{title}}</h1>
         <div class="blog-post-meta">
-          <span><i data-lucide="calendar" style="width:14px;height:14px;"></i> Month Day, Year</span>
-          <span><i data-lucide="clock" style="width:14px;height:14px;"></i> X min read</span>
+          <span><i data-lucide="calendar" style="width:14px;height:14px;"></i> {{date}}</span>
+          <span><i data-lucide="clock" style="width:14px;height:14px;"></i> {{readTime}}</span>
         </div>
       </div>
 
-      <!-- STEP 4: Replace image (put your image in the images/ folder) -->
       <div class="blog-post-image fade-up">
-        <img src="../images/your-image.jpg" alt="Description of your image">
+        <img src="{{image}}" alt="{{title}}">
       </div>
 
-      <!-- STEP 5: Write your article content here -->
       <div class="blog-post-content fade-up">
-        
-        <p>Your opening paragraph. Hook the reader with something relatable or surprising.</p>
-
-        <h2>Main Section Heading</h2>
-        <p>Your content here. Write naturally, as if you're talking to a patient. Keep paragraphs short and readable.</p>
-        
-        <p>Continue your content. You can use <strong>bold text</strong> for emphasis and <em>italic text</em> for quotes or special terms.</p>
-
-        <h2>Another Section</h2>
-        <p>More content. Break your article into clear sections with headings so readers can scan it easily.</p>
-        
-        <ul>
-          <li><strong>Point one</strong> - explanation</li>
-          <li><strong>Point two</strong> - explanation</li>
-          <li><strong>Point three</strong> - explanation</li>
-        </ul>
-
-        <h2>Conclusion</h2>
-        <p>Wrap up with a clear takeaway and invite readers to reach out. Link to your contact page or WhatsApp.</p>
-        
-        <p>If you have questions, <a href="https://wa.me/2348028027119?text=Hello%2C%20I%20read%20your%20blog%20and%20have%20a%20question" target="_blank" rel="noopener">message us on WhatsApp</a>. We're always happy to help.</p>
+{{content}}
       </div>
 
-      <!-- STEP 6: Update the CTA -->
       <div class="blog-post-cta fade-up">
-        <h3>Have a question?</h3>
-        <p>Tell us what you're dealing with and we'll guide you.</p>
+        <h3>{{cta_heading}}</h3>
+        <p>{{cta_text}}</p>
         <a href="https://wa.me/2348028027119?text=Hello%2C%20I%20read%20your%20blog%20and%20have%20a%20question" class="btn btn-whatsapp" target="_blank" rel="noopener"><i data-lucide="message-circle" style="width:18px;height:18px;"></i> Chat on WhatsApp</a>
       </div>
     </div>
   </article>
 
-  <!-- ===== FOOTER (don't change) ===== -->
+  <!-- ===== FOOTER ===== -->
   <footer>
     <div class="container">
       <div class="footer-grid">
