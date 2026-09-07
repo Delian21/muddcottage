@@ -1268,6 +1268,8 @@ footer {
   height: 40px;
   border-radius: 50%;
   background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.85);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1762,7 +1764,7 @@ footer {
   /* WhatsApp float: hovers just above the bottom, level with the footer social icons */
   .whatsapp-float {
     bottom: 20px;
-    right: 0;
+    right: 12px;
     width: 52px;
     height: 52px;
   }
@@ -1956,9 +1958,9 @@ footer {
   .footer-col a { color: rgba(255,255,255,0.55); }
   .footer-col a:hover { color: var(--green-mid); }
   .footer-bottom { color: rgba(255,255,255,0.3); border-top-color: rgba(255,255,255,0.08); }
-  .footer-social a { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); }
+  .footer-social a { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85); }
   .footer-social a:hover { background: var(--green-mid); color: var(--text-white); }
-  .footer-social a svg { stroke: rgba(255,255,255,0.6); }
+  .footer-social a svg { stroke: rgba(255,255,255,0.85); }
   .footer-social a:hover svg { stroke: var(--white); }
 
   /* Blog */
@@ -2056,9 +2058,9 @@ footer {
   .footer-col a:hover { color: var(--green-mid); }
   .footer-brand p { color: rgba(255,255,255,0.45); }
   .footer-bottom { color: rgba(255,255,255,0.3); border-top-color: rgba(255,255,255,0.08); }
-  .footer-social a { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); }
+  .footer-social a { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85); }
   .footer-social a:hover { background: var(--green-mid); color: var(--text-white); }
-  .footer-social a svg { stroke: rgba(255,255,255,0.6); }
+  .footer-social a svg { stroke: rgba(255,255,255,0.85); }
   .footer-social a:hover svg { stroke: var(--white); }
 
   /* Video section */
