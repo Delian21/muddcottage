@@ -3,6 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('mc-theme');
+        var dark = t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (dark) document.documentElement.classList.add('theme-dark');
+      } catch (e) {}
+    })();
+  </script>
   <title>Mudd Cottage Herbhome – Where nature remembers what your body needs</title>
   <meta name="description" content="Time-tested herbal teas, remedies, and wellness guidance rooted in tradition, prepared with intention. Your wellness shouldn't be a mystery.">
   
@@ -39,13 +48,15 @@
         <a href="videos.html">Videos</a>
         <a href="contact.html">Contact</a>
         <a href="https://wa.me/2348028027119?text=Hello%20Mudd%20Cottage%2C%20I%27d%20like%20to%20know%20more%20about%20your%20herbs" class="btn btn-whatsapp nav-cta" target="_blank" rel="noopener"><i data-lucide="message-circle" style="width:18px;height:18px;"></i> WhatsApp Us</a>
-      </nav>
-      
-      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+      </nav>      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+          <i data-lucide="moon" class="icon-moon"></i>
+          <i data-lucide="sun" class="icon-sun"></i>
+        </button>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -96,7 +107,7 @@
   </section>
 
   <!-- Wave Divider -->
-  <div class="wave-divider" style="margin-top: -1px;">
+  <div class="wave-divider wave-into-trust" style="margin-top: -1px;">
     <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
       <path fill="#A36B4C" fill-opacity="1" d="M0,0 C240,50 480,60 720,40 C960,20 1200,50 1440,0 L1440,60 L0,60 Z"></path>
     </svg>

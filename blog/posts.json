@@ -1,14 +1,5 @@
 [
   {
-    "slug": "cms-test-post",
-    "title": "CMS Test Post",
-    "date": "2026-09-07",
-    "category": "Tips",
-    "description": "A test post created to verify the admin panel publishing pipeline works end to end.",
-    "image": "/images/herbs1.jpg",
-    "readTime": "1 min read"
-  },
-  {
     "slug": "sleep-naturally",
     "title": "Sleep Naturally: Herbs That Actually Help You Rest",
     "date": "2026-09-01",

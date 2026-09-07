@@ -1,7 +1,7 @@
 /**
  * Blog Post Loader
  * Reads blog/posts.json and renders blog cards dynamically.
- * To add a new post: add an entry to blog/posts.json and create the HTML file in blog/.
+ * Supports keyword search and Latest/Earliest sorting via the blog toolbar.
  */
 
 (function() {
@@ -9,6 +9,13 @@
 
   var blogGrid = document.getElementById('blogGrid');
   if (!blogGrid) return;
+
+  var allPosts = [];        // every loaded post
+  var state = { query: '', sort: 'latest' };
+
+  var searchInput = document.getElementById('blogSearch');
+  var sortGroup = document.getElementById('blogSort');
+  var resultsInfo = document.getElementById('blogResults');
 
   // Format date nicely
   function formatDate(dateStr) {
@@ -37,6 +44,66 @@
     '</a>';
   }
 
+  // Highlight scroll-in animations for freshly rendered cards
+  function observeCards() {
+    // Re-initialize Lucide icons for new elements
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+    blogGrid.querySelectorAll('.fade-up').forEach(function(el) {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      observer.observe(el);
+    });
+  }
+
+  // Filter + sort posts by current state, then render
+  function renderPosts() {
+    var q = state.query.trim().toLowerCase();
+    var posts = allPosts.filter(function(post) {
+      if (!q) return true;
+      return ['title', 'description', 'category'].some(function(key) {
+        return String(post[key] || '').toLowerCase().indexOf(q) !== -1;
+      });
+    });
+
+    posts.sort(function(a, b) {
+      var diff = new Date(b.date) - new Date(a.date);
+      return state.sort === 'latest' ? diff : -diff;
+    });
+
+    if (resultsInfo) {
+      resultsInfo.textContent = q
+        ? posts.length + ' post' + (posts.length === 1 ? '' : 's') + ' matching "' + state.query.trim() + '"'
+        : allPosts.length + ' post' + (allPosts.length === 1 ? '' : 's');
+    }
+
+    if (posts.length === 0) {
+      blogGrid.innerHTML = '<p class="blog-empty">No posts found for <em>"' +
+        q.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') +
+        '"</em>. Try another keyword.</p>';
+      return;
+    }
+
+    var html = '';
+    posts.forEach(function(post) {
+      html += renderCard(post);
+    });
+
+    blogGrid.innerHTML = html;
+    observeCards();
+  }
+
   // Load and render posts
   function loadPosts() {
     var xhr = new XMLHttpRequest();
@@ -45,41 +112,8 @@
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
           try {
-            var posts = JSON.parse(xhr.responseText);
-            // Sort by date, newest first
-            posts.sort(function(a, b) {
-              return new Date(b.date) - new Date(a.date);
-            });
-
-            var html = '';
-            posts.forEach(function(post) {
-              html += renderCard(post);
-            });
-
-            blogGrid.innerHTML = html;
-
-            // Re-initialize Lucide icons for new elements
-            if (typeof lucide !== 'undefined') {
-              lucide.createIcons();
-            }
-
-            // Re-observe for scroll animations
-            blogGrid.querySelectorAll('.fade-up').forEach(function(el) {
-              el.style.opacity = '0';
-              el.style.transform = 'translateY(30px)';
-              var observer = new IntersectionObserver(function(entries) {
-                entries.forEach(function(entry) {
-                  if (entry.isIntersecting) {
-                    entry.target.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                    observer.unobserve(entry.target);
-                  }
-                });
-              }, { threshold: 0.1 });
-              observer.observe(el);
-            });
-
+            allPosts = JSON.parse(xhr.responseText);
+            renderPosts();
           } catch (e) {
             blogGrid.innerHTML = '<p style="color: var(--text-light); text-align: center; grid-column: 1/-1;">No posts yet.</p>';
           }
@@ -95,20 +129,36 @@
   }
 
   function showFallback() {
-    blogGrid.innerHTML =
-      '<a href="blog/why-herbs-still-work.html" class="blog-card fade-up">' +
-        '<div class="blog-card-image"><img src="images/herbs1.jpg" alt="Herbal medicine"><span class="blog-card-tag">Herbal Medicine</span></div>' +
-        '<div class="blog-card-content"><div class="blog-card-date">August 15, 2026</div><h3>Why Herbs Still Work in a World of Pharmaceuticals</h3><p>For centuries, communities relied on plants for healing. Modern science is now catching up.</p><span class="blog-card-read">Read Article &rarr;</span></div>' +
-      '</a>' +
-      '<a href="blog/common-herbs-every-home.html" class="blog-card fade-up">' +
-        '<div class="blog-card-image"><img src="images/herbs2.jpg" alt="Common herbs"><span class="blog-card-tag">Wellness</span></div>' +
-        '<div class="blog-card-content"><div class="blog-card-date">August 28, 2026</div><h3>5 Common Herbs Every Nigerian Home Should Have</h3><p>From bitter leaf to moringa, these everyday plants pack surprising healing power.</p><span class="blog-card-read">Read Article &rarr;</span></div>' +
-      '</a>' +
-      '<a href="blog/sleep-naturally.html" class="blog-card fade-up">' +
-        '<div class="blog-card-image"><img src="images/herbs3.jpg" alt="Sleep remedies"><span class="blog-card-tag">Remedies</span></div>' +
-        '<div class="blog-card-content"><div class="blog-card-date">September 1, 2026</div><h3>Sleep Naturally: Herbs That Actually Help You Rest</h3><p>Insomnia does not always need pills. Certain herbal blends calm the nervous system.</p><span class="blog-card-read">Read Article &rarr;</span></div>' +
-      '</a>';
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    allPosts = [
+      { slug: 'why-herbs-still-work', image: 'images/herbs1.jpg', category: 'Herbal Medicine', date: '2026-08-15', title: 'Why Herbs Still Work in a World of Pharmaceuticals', description: 'For centuries, communities relied on plants for healing. Modern science is now catching up.' },
+      { slug: 'common-herbs-every-home', image: 'images/herbs2.jpg', category: 'Wellness', date: '2026-08-28', title: '5 Common Herbs Every Nigerian Home Should Have', description: 'From bitter leaf to moringa, these everyday plants pack surprising healing power.' },
+      { slug: 'sleep-naturally', image: 'images/herbs3.jpg', category: 'Remedies', date: '2026-09-01', title: 'Sleep Naturally: Herbs That Actually Help You Rest', description: 'Insomnia does not always need pills. Certain herbal blends calm the nervous system.' }
+    ];
+    renderPosts();
+  }
+
+  // Wire up the search box and sort toggle
+  if (searchInput) {
+    var debounce;
+    searchInput.addEventListener('input', function() {
+      clearTimeout(debounce);
+      debounce = setTimeout(function() {
+        state.query = searchInput.value;
+        renderPosts();
+      }, 150);
+    });
+  }
+
+  if (sortGroup) {
+    sortGroup.querySelectorAll('button').forEach(function(button) {
+      button.addEventListener('click', function() {
+        state.sort = button.getAttribute('data-sort');
+        sortGroup.querySelectorAll('button').forEach(function(b) {
+          b.classList.toggle('active', b === button);
+        });
+        renderPosts();
+      });
+    });
   }
 
   loadPosts();

@@ -11,6 +11,16 @@
     lucide.createIcons();
   }
 
+  // ===== Theme Toggle (light/dark) =====
+  var themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', function() {
+      var dark = document.documentElement.classList.toggle('theme-dark');
+      try { localStorage.setItem('mc-theme', dark ? 'dark' : 'light'); } catch (e) {}
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    });
+  }
+
   // ===== Header Scroll Effect =====
   const header = document.getElementById('header');
   

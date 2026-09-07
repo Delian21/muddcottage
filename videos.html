@@ -3,6 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('mc-theme');
+        var dark = t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (dark) document.documentElement.classList.add('theme-dark');
+      } catch (e) {}
+    })();
+  </script>
   <title>Videos – Mudd Cottage Herbhome</title>
   <meta name="description" content="Watch videos from Mudd Cottage Herbhome - herbal wellness tips, remedies, and healing traditions on YouTube and Facebook.">
   
@@ -34,9 +43,15 @@
         <a href="https://wa.me/2348028027119?text=Hello%20Mudd%20Cottage%2C%20I%27d%20like%20to%20know%20more" class="btn btn-whatsapp nav-cta" target="_blank" rel="noopener"><i data-lucide="message-circle" style="width:18px;height:18px;"></i> WhatsApp Us</a>
       </nav>
       
-      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
-        <span></span><span></span><span></span>
-      </button>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+          <i data-lucide="moon" class="icon-moon"></i>
+          <i data-lucide="sun" class="icon-sun"></i>
+        </button>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </header>
 
