@@ -3,6 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('mc-theme');
+        if (t === 'dark' || t === 'light') {
+          document.documentElement.classList.toggle('theme-dark', t === 'dark');
+        } else {
+          // No saved choice: follow the system preference (three-state toggle).
+          try {
+            var mq = window.matchMedia('(prefers-color-scheme: dark)');
+            function applySystemTheme() {
+              document.documentElement.classList.toggle('theme-dark', mq.matches);
+            }
+            mq.addEventListener ? mq.addEventListener('change', applySystemTheme)
+                               : mq.addListener(applySystemTheme);
+            applySystemTheme();
+          } catch (e) {}
+        }
+      } catch (e) {}
+    })();
+  </script>
   <title>{{title}} – Mudd Cottage Herbhome</title>
   <meta name="description" content="{{description}}">
 
@@ -23,6 +44,7 @@
         <div class="logo-text">Mudd Cottage<span> Herbhome</span></div>
       </a>
 
+      <div class="nav-cluster">
       <nav id="nav">
         <a href="../index.html">Home</a>
         <a href="../about.html">About</a>
@@ -32,6 +54,7 @@
         <a href="../contact.html">Contact</a>
         <a href="https://wa.me/2348028027119?text=Hello%20Mudd%20Cottage%2C%20I%27d%20like%20to%20know%20more" class="btn btn-whatsapp nav-cta" target="_blank" rel="noopener"><i data-lucide="message-circle" style="width:18px;height:18px;"></i> WhatsApp Us</a>
       </nav>
+      </div>
 
       <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
         <span></span><span></span><span></span>
@@ -39,10 +62,11 @@
     </div>
   </header>
 
-  <!-- Floating light/dark toggle (just below the header) -->
+  <!-- Floating light/dark toggle (bottom-left on mobile, mirroring the WhatsApp float) -->
   <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-    <i data-lucide="moon" class="icon-moon"></i>
     <i data-lucide="sun" class="icon-sun"></i>
+    <i data-lucide="moon" class="icon-moon"></i>
+    <i data-lucide="monitor" class="icon-monitor"></i>
   </button>
 
   <!-- ===== ARTICLE ===== -->

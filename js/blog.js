@@ -11,6 +11,12 @@
   var blogGrid = document.getElementById('blogGrid');
   if (!blogGrid) return;
 
+  // Respect the OS "reduce motion" setting for scripted reveal animations.
+  var reduceMotion = false;
+  try {
+    reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  } catch (e) {}
+
   var allPosts = [];        // every loaded post
   var state = { query: '', category: 'all', sort: 'latest' };
 
@@ -53,6 +59,14 @@
     if (typeof lucide !== 'undefined') {
       lucide.createIcons();
     }
+    if (reduceMotion) {
+      // Show the cards straight away instead of animating them in.
+      blogGrid.querySelectorAll('.fade-up').forEach(function(el) {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      });
+      return;
+    }
     blogGrid.querySelectorAll('.fade-up').forEach(function(el) {
       el.style.opacity = '0';
       el.style.transform = 'translateY(30px)';
@@ -79,10 +93,41 @@
       b.classList.toggle('active', active);
       b.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
+    moveChipsThumb();
     renderPosts();
   }
 
   var allChip = chipsGroup ? chipsGroup.querySelector('button[data-category="all"]') : null;
+
+  // Sliding active pill: like the sort toggle, a thumb glides behind the
+  // active chip instead of the background hard-swapping between chips.
+  var chipsThumb = null;
+
+  function moveChipsThumb() {
+    if (!chipsGroup || !chipsThumb) return;
+    var active = chipsGroup.querySelector('button.active');
+    if (!active) return;
+    chipsThumb.style.width = active.offsetWidth + 'px';
+    chipsThumb.style.height = active.offsetHeight + 'px';
+    chipsThumb.style.transform = 'translate(' + active.offsetLeft + 'px,' + active.offsetTop + 'px)';
+  }
+
+  if (chipsGroup) {
+    chipsThumb = document.createElement('span');
+    chipsThumb.className = 'blog-chips-thumb';
+    chipsThumb.setAttribute('aria-hidden', 'true');
+    chipsGroup.insertBefore(chipsThumb, chipsGroup.firstChild);
+    moveChipsThumb(); // Position for the static "All posts" chip right away
+
+    // Chip widths change once the webfont finishes loading, and on resize
+    // (chips re-wrap across lines at narrow widths).
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(moveChipsThumb);
+    }
+    window.addEventListener('resize', moveChipsThumb);
+    window.addEventListener('load', moveChipsThumb);
+  }
+
   if (allChip) {
     allChip.addEventListener('click', function() { activateChip(allChip); });
   }
@@ -107,6 +152,7 @@
       chipsGroup.appendChild(chip);
     });
     chipsBuilt = true;
+    moveChipsThumb();
   }
 
   // Filter + sort posts by current state, then render
@@ -219,7 +265,7 @@
 
     // Button widths change once the webfont finishes loading, and on resize.
     if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(moveThumb);
+      document.fonts.ready.then(function() { moveThumb(); moveChipsThumb(); });
     }
     window.addEventListener('resize', moveThumb);
 

@@ -333,6 +333,15 @@ header .container {
   justify-content: space-between;
 }
 
+/* The logo + nav (with its WhatsApp CTA) form one right-aligned cluster;
+   space-between then only distributes the gap between the cluster and the
+   mobile hamburger, instead of stretching the nav across the whole header. */
+.nav-cluster {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
 .logo {
   display: flex;
   align-items: center;
@@ -1572,10 +1581,6 @@ footer {
   transition: transform var(--transition), width var(--transition);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .blog-sort .blog-sort-thumb { transition: none; }
-}
-
 .blog-sort button:focus-visible {
   outline: 2px solid var(--green-mid);
   outline-offset: 2px;
@@ -1589,6 +1594,7 @@ footer {
   gap: 8px;
   flex-basis: 100%;
   margin-bottom: 8px;
+  position: relative;
 }
 
 .blog-chips button {
@@ -1604,19 +1610,39 @@ footer {
   font-weight: 500;
   cursor: pointer;
   transition: all var(--transition);
+  /* Keep the labels above the sliding thumb (same trick as the sort toggle). */
+  position: relative;
+  z-index: 1;
 }
 
 .blog-chips button:hover { color: var(--green-mid); }
 
+/* The active chip's background is the sliding thumb (js/blog.js), so the
+   highlight glides between chips instead of hard-swapping. The active chip
+   itself goes transparent so the thumb shows through as its fill. */
 .blog-chips button.active {
-  background: var(--green-mid);
+  background: transparent;
   color: var(--text-white);
   border-color: var(--green-mid);
+}
+
+.blog-chips .blog-chips-thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-radius: 999px;
+  background: var(--green-mid);
+  pointer-events: none;
+  transition: transform var(--transition), width var(--transition), height var(--transition);
 }
 
 .blog-chips button:focus-visible {
   outline: 2px solid var(--green-mid);
   outline-offset: 2px;
+  z-index: 1;
+  position: relative;
 }
 
 .blog-results {
@@ -1900,6 +1926,42 @@ footer {
   transform: scale(1);
 }
 
+/* ===== Reduced motion: honour the OS "reduce motion" setting globally =====
+   Kill decorative loops (leaf particles, floats, pulses, glows), entrance
+   transitions and scroll-behavior smoothing for everyone who opts out. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Decorative loops simply never run */
+  .leaf-particle,
+  .whatsapp-float,
+  .hero::before,
+  .hero::after {
+    animation: none !important;
+  }
+
+  /* Elements whose only motion is an entrance reveal must still end up
+     visible: skip the offset and just fade (or show) them. */
+  .fade-up,
+  .fade-left,
+  .fade-right,
+  .scale-in {
+    transform: none;
+    transition: opacity 0.3s ease;
+  }
+}
+
 /* ===== WhatsApp Floating Button ===== */
 .whatsapp-float {
   position: fixed;
@@ -1957,6 +2019,8 @@ footer {
 }
 
 @media (max-width: 768px) {
+  .nav-cluster { display: contents; }
+
   nav {
     position: fixed;
     top: 0;
@@ -2083,11 +2147,12 @@ footer {
   }
 }
 
-/* ===== Theme Toggle (small floating button just under the header) ===== */
+/* ===== Theme Toggle (small floating button, bottom-left on mobile so it
+   mirrors the WhatsApp float at bottom-right) ===== */
 .theme-toggle {
   position: fixed;
-  top: calc(64px + env(safe-area-inset-top, 0px));
-  right: 16px;
+  bottom: 16px;
+  left: 16px;
   z-index: 1001;
   display: inline-flex;
   align-items: center;
@@ -2102,11 +2167,11 @@ footer {
   cursor: pointer;
   transition: all var(--transition);
   animation: theme-toggle-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both;
-  transform-origin: top right;
+  transform-origin: bottom left;
 }
 
 @keyframes theme-toggle-in {
-  from { opacity: 0; transform: translateX(16px) scale(0.85); }
+  from { opacity: 0; transform: translateX(-16px) scale(0.85); }
   to { opacity: 1; transform: translateX(0) scale(1); }
 }
 
@@ -2114,12 +2179,6 @@ footer {
 .theme-toggle:focus-visible {
   outline: 2px solid var(--green-mid);
   outline-offset: 3px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .theme-toggle {
-    animation: none;
-  }
 }
 
 .theme-toggle:hover {
@@ -2134,17 +2193,35 @@ footer {
   color: var(--text-dark);
 }
 
+/* Exactly one icon shows at a time: which one reflects the current
+   three-state theme (light / dark / system), set by .icon-* classes on the
+   button from js/main.js. In system mode the chosen icon follows the OS. */
 .theme-toggle .icon-sun { display: none; }
-.theme-toggle .icon-moon { display: block; }
+.theme-toggle .icon-moon { display: none; }
+.theme-toggle .icon-monitor { display: none; }
+.theme-toggle.show-sun .icon-sun { display: block; }
+.theme-toggle.show-moon .icon-moon { display: block; }
+.theme-toggle.show-monitor .icon-monitor { display: block; }
 
-/* Short viewports (landscape phones): move to bottom-left so it never
-   overlaps page content or the WhatsApp float (bottom-right). */
-@media (max-height: 560px) {
+/* Wide screens: keep the toggle out of the thumb's way by parking it just
+   under the header on the right. */
+@media (min-width: 769px) {
+  .theme-toggle {
+    bottom: auto;
+    left: auto;
+    top: calc(64px + env(safe-area-inset-top, 0px));
+    right: 16px;
+    transform-origin: top right;
+  }
+}
+
+@media (min-width: 769px) and (max-height: 560px) {
   .theme-toggle {
     top: auto;
     right: auto;
     bottom: 16px;
     left: 16px;
+    transform-origin: bottom left;
   }
 }
 
@@ -2344,7 +2421,7 @@ html.theme-dark body { background: var(--green-bg); color: var(--text-dark); }
   }
 
   html.theme-dark .blog-chips button.active {
-    background: var(--green-mid);
+    background: transparent;
     color: var(--text-white);
     border-color: var(--green-mid);
   }
@@ -2491,8 +2568,6 @@ html.theme-dark body { background: var(--green-bg); color: var(--text-dark); }
   /* Theme toggle */
   html.theme-dark .theme-toggle { background: var(--green-bg); border-color: rgba(255,255,255,0.2); box-shadow: 0 2px 12px rgba(0,0,0,0.45); }
   html.theme-dark .theme-toggle svg { color: #EFECE4; }
-  html.theme-dark .theme-toggle .icon-sun { display: block; }
-  html.theme-dark .theme-toggle .icon-moon { display: none; }
 
   /* Scrollbar */
   html.theme-dark ::-webkit-scrollbar { width: 8px; }

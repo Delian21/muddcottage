@@ -11,9 +11,62 @@
     lucide.createIcons();
   }
 
-  // ===== Theme Toggle (light/dark) =====
+  // ===== Reduced Motion =====
+  // Honour the OS "reduce motion" setting across every scripted animation:
+  // typing effect, parallax, smooth anchor scrolling, counter bounce.
+  var reduceMotion = false;
+  try {
+    var motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    reduceMotion = motionQuery.matches;
+    var onMotionChange = function(e) { reduceMotion = e.matches; };
+    motionQuery.addEventListener ? motionQuery.addEventListener('change', onMotionChange)
+                                 : motionQuery.addListener(onMotionChange);
+  } catch (e) {}
+
+  // ===== Theme Toggle (three-state: light / dark / system default) =====
   var themeToggle = document.getElementById('themeToggle');
+
+  function applyTheme(mode) {
+    var systemDark = false;
+    try { systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) {}
+    var dark = mode === 'dark' || (mode === 'system' && systemDark);
+    document.documentElement.classList.toggle('theme-dark', dark);
+    try { localStorage.setItem('mc-theme', mode); } catch (e) {}
+  }
+
+  // The button shows one icon per mode: sun = light, moon = dark,
+  // monitor = system default (what the OS preference currently resolves to
+  // is spelled out in the aria-label).
+  function themeIconFor(mode) {
+    if (mode === 'light') return 'sun';
+    if (mode === 'dark') return 'moon';
+    return 'monitor';
+  }
+
+  function renderThemeToggle(mode) {
+    if (!themeToggle) return;
+    themeToggle.classList.remove('show-sun', 'show-moon', 'show-monitor');
+    themeToggle.classList.add('show-' + themeIconFor(mode));
+    var label = mode === 'system' ? 'Theme: system default (currently '
+      : 'Theme: ';
+    themeToggle.setAttribute('aria-label',
+      label + (document.documentElement.classList.contains('theme-dark') ? 'dark' : 'light') +
+      (mode === 'system' ? ')' : '') + '. Click to switch to ' +
+      (mode === 'light' ? 'dark' : mode === 'dark' ? 'system default' : 'light'));
+  }
+
+  function getThemeMode() {
+    var mode = 'system';
+    try {
+      var saved = localStorage.getItem('mc-theme');
+      if (saved === 'light' || saved === 'dark') mode = saved;
+    } catch (e) {}
+    return mode;
+  }
+
   if (themeToggle) {
+    var themeMode = getThemeMode();
+
     // Replay the entrance animation on page show so the toggle slides in on
     // every navigation, not just the first load (browsers keep it alive).
     window.addEventListener('pageshow', function() {
@@ -24,11 +77,29 @@
     });
 
     themeToggle.addEventListener('click', function() {
-      var dark = document.documentElement.classList.toggle('theme-dark');
-      try { localStorage.setItem('mc-theme', dark ? 'dark' : 'light'); } catch (e) {}
+      themeMode = themeMode === 'light' ? 'dark'
+        : themeMode === 'dark' ? 'system'
+        : 'light';
+      applyTheme(themeMode);
+      renderThemeToggle(themeMode);
       if (typeof lucide !== 'undefined') lucide.createIcons();
     });
+
+    // Keep following the OS while in system mode (e.g. auto dark at sunset).
+    try {
+      var schemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      var onSchemeChange = function() {
+        if (themeMode === 'system') {
+          applyTheme('system');
+          renderThemeToggle('system');
+        }
+      };
+      schemeQuery.addEventListener ? schemeQuery.addEventListener('change', onSchemeChange)
+                                   : schemeQuery.addListener(onSchemeChange);
+    } catch (e) {}
   }
+
+  renderThemeToggle(getThemeMode());
 
   // ===== Header Scroll Effect =====
   const header = document.getElementById('header');
@@ -114,6 +185,7 @@
   function initTypingEffect() {
     const accentEl = document.querySelector('.hero-content h1 .accent');
     if (!accentEl) return;
+    if (reduceMotion) return; // Leave the full title in place, no typing
     
     const text = accentEl.textContent;
     accentEl.textContent = '';
@@ -162,14 +234,16 @@
           function updateCounter() {
             current += increment;
             if (current >= target) {
-              counter.textContent = target + suffix;
+            counter.textContent = target + suffix;
+            if (!reduceMotion) {
               // Add a subtle bounce
               counter.style.transform = 'scale(1.1)';
               setTimeout(function() {
                 counter.style.transform = 'scale(1)';
                 counter.style.transition = 'transform 0.3s ease';
               }, 150);
-              return;
+            }
+            return;
             }
             counter.textContent = Math.floor(current) + suffix;
             requestAnimationFrame(function() {
@@ -191,6 +265,7 @@
   let ticking = false;
   
   window.addEventListener('scroll', function() {
+    if (reduceMotion) return; // No parallax when motion is reduced
     if (!ticking) {
       requestAnimationFrame(function() {
         const scrolled = window.scrollY;
@@ -260,7 +335,7 @@
       var target = document.querySelector(this.getAttribute('href'));
       if (target) {
         e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
       }
     });
   });
