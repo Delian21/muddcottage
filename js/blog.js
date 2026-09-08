@@ -1,7 +1,8 @@
 /**
  * Blog Post Loader
  * Reads blog/posts.json and renders blog cards dynamically.
- * Supports keyword search and Latest/Earliest sorting via the blog toolbar.
+ * Supports keyword search, category filter chips, and date sorting
+ * (newest/oldest first) via the blog toolbar.
  */
 
 (function() {
@@ -11,11 +12,13 @@
   if (!blogGrid) return;
 
   var allPosts = [];        // every loaded post
-  var state = { query: '', sort: 'latest' };
+  var state = { query: '', category: 'all', sort: 'latest' };
 
   var searchInput = document.getElementById('blogSearch');
   var sortGroup = document.getElementById('blogSort');
   var resultsInfo = document.getElementById('blogResults');
+  var chipsGroup = document.getElementById('blogChips');
+  var chipsBuilt = false;
 
   // Format date nicely
   function formatDate(dateStr) {
@@ -67,31 +70,79 @@
     });
   }
 
+  // Shared chip behaviour: the static "All posts" chip lives in the HTML,
+  // dynamic category chips are appended by buildChips().
+  function activateChip(button) {
+    state.category = button.getAttribute('data-category');
+    chipsGroup.querySelectorAll('button').forEach(function(b) {
+      var active = b === button;
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+    renderPosts();
+  }
+
+  var allChip = chipsGroup ? chipsGroup.querySelector('button[data-category="all"]') : null;
+  if (allChip) {
+    allChip.addEventListener('click', function() { activateChip(allChip); });
+  }
+
+  // Build one chip per category found in the loaded posts
+  function buildChips() {
+    if (!chipsGroup || chipsBuilt) return;
+    var categories = [];
+    allPosts.forEach(function(post) {
+      var cat = String(post.category || '').trim();
+      if (cat && categories.indexOf(cat) === -1) categories.push(cat);
+    });
+    categories.sort(function(a, b) { return a.localeCompare(b); });
+
+    categories.forEach(function(cat) {
+      var chip = document.createElement('button');
+      chip.type = 'button';
+      chip.setAttribute('data-category', cat);
+      chip.setAttribute('aria-pressed', 'false');
+      chip.textContent = cat;
+      chip.addEventListener('click', function() { activateChip(chip); });
+      chipsGroup.appendChild(chip);
+    });
+    chipsBuilt = true;
+  }
+
   // Filter + sort posts by current state, then render
   function renderPosts() {
     var q = state.query.trim().toLowerCase();
     var posts = allPosts.filter(function(post) {
+      if (state.category !== 'all' && String(post.category || '').trim() !== state.category) {
+        return false;
+      }
       if (!q) return true;
       return ['title', 'description', 'category'].some(function(key) {
         return String(post[key] || '').toLowerCase().indexOf(q) !== -1;
       });
     });
 
+    // Date sort: newest first by default; ties broken alphabetically so the
+    // order is stable across renders.
     posts.sort(function(a, b) {
       var diff = new Date(b.date) - new Date(a.date);
-      return state.sort === 'latest' ? diff : -diff;
+      if (diff !== 0) return state.sort === 'latest' ? diff : -diff;
+      return String(a.title).localeCompare(String(b.title));
     });
 
     if (resultsInfo) {
-      resultsInfo.textContent = q
-        ? posts.length + ' post' + (posts.length === 1 ? '' : 's') + ' matching "' + state.query.trim() + '"'
+      var filtered = q || state.category !== 'all';
+      resultsInfo.textContent = filtered
+        ? posts.length + ' post' + (posts.length === 1 ? '' : 's') + (q ? ' matching "' + state.query.trim() + '"' : '') + (state.category !== 'all' ? ' in ' + state.category : '')
         : allPosts.length + ' post' + (allPosts.length === 1 ? '' : 's');
     }
 
     if (posts.length === 0) {
-      blogGrid.innerHTML = '<p class="blog-empty">No posts found for <em>"' +
-        q.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') +
-        '"</em>. Try another keyword.</p>';
+      blogGrid.innerHTML = '<p class="blog-empty">No posts found' +
+        (q ? ' for <em>"' +
+          q.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') +
+          '"</em>' : '') +
+        '. Try another keyword or category.</p>';
       return;
     }
 
@@ -113,6 +164,7 @@
         if (xhr.status === 200) {
           try {
             allPosts = JSON.parse(xhr.responseText);
+            buildChips();
             renderPosts();
           } catch (e) {
             blogGrid.innerHTML = '<p style="color: var(--text-light); text-align: center; grid-column: 1/-1;">No posts yet.</p>';
@@ -134,10 +186,11 @@
       { slug: 'common-herbs-every-home', image: 'images/herbs2.jpg', category: 'Wellness', date: '2026-08-28', title: '5 Common Herbs Every Nigerian Home Should Have', description: 'From bitter leaf to moringa, these everyday plants pack surprising healing power.' },
       { slug: 'sleep-naturally', image: 'images/herbs3.jpg', category: 'Remedies', date: '2026-09-01', title: 'Sleep Naturally: Herbs That Actually Help You Rest', description: 'Insomnia does not always need pills. Certain herbal blends calm the nervous system.' }
     ];
+    buildChips();
     renderPosts();
   }
 
-  // Wire up the search box and sort toggle
+  // Wire up the search box and the date-sort toggle
   if (searchInput) {
     var debounce;
     searchInput.addEventListener('input', function() {
@@ -151,10 +204,13 @@
 
   if (sortGroup) {
     sortGroup.querySelectorAll('button').forEach(function(button) {
+      button.setAttribute('aria-pressed', button.classList.contains('active') ? 'true' : 'false');
       button.addEventListener('click', function() {
         state.sort = button.getAttribute('data-sort');
         sortGroup.querySelectorAll('button').forEach(function(b) {
-          b.classList.toggle('active', b === button);
+          var active = b === button;
+          b.classList.toggle('active', active);
+          b.setAttribute('aria-pressed', active ? 'true' : 'false');
         });
         renderPosts();
       });

@@ -14,6 +14,15 @@
   // ===== Theme Toggle (light/dark) =====
   var themeToggle = document.getElementById('themeToggle');
   if (themeToggle) {
+    // Replay the entrance animation on page show so the toggle slides in on
+    // every navigation, not just the first load (browsers keep it alive).
+    window.addEventListener('pageshow', function() {
+      themeToggle.style.animation = 'none';
+      // Force a reflow so restarting the animation actually takes effect.
+      void themeToggle.offsetWidth;
+      themeToggle.style.animation = '';
+    });
+
     themeToggle.addEventListener('click', function() {
       var dark = document.documentElement.classList.toggle('theme-dark');
       try { localStorage.setItem('mc-theme', dark ? 'dark' : 'light'); } catch (e) {}
@@ -364,5 +373,60 @@
   }
   
   initTestimonialCarousel();
+
+  // ===== Mobile Swipe Carousel Dots (focus + services grids) =====
+  // On mobile these grids become horizontal snap carousels (see style.css).
+  // Dots are injected on desktop too so adding/removing them on resize stays
+  // simple; CSS keeps them hidden until the mobile layout kicks in.
+  function initSwipeCarouselDots() {
+    var mediaQuery = window.matchMedia('(max-width: 768px)');
+
+    document.querySelectorAll('.focus-grid, .services-grid').forEach(function(track) {
+      var cards = track.querySelectorAll('.focus-card, .service-card');
+      if (!cards.length) return;
+
+      var dotsWrap = document.createElement('div');
+      dotsWrap.className = 'carousel-dots';
+      dotsWrap.setAttribute('role', 'tablist');
+      dotsWrap.setAttribute('aria-label', 'Carousel position');
+
+      var dots = Array.prototype.map.call(cards, function(_, i) {
+        var dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Go to card ' + (i + 1));
+        dot.addEventListener('click', function() {
+          track.scrollTo({ left: cards[i].offsetLeft - track.offsetLeft, behavior: 'smooth' });
+        });
+        dotsWrap.appendChild(dot);
+        return dot;
+      });
+
+      track.parentNode.insertBefore(dotsWrap, track.nextSibling);
+
+      function updateActiveDot() {
+        var mid = track.scrollLeft + track.clientWidth / 2;
+        var best = 0;
+        var bestDist = Infinity;
+        Array.prototype.forEach.call(cards, function(card, i) {
+          var center = card.offsetLeft - track.offsetLeft + card.offsetWidth / 2;
+          var dist = Math.abs(center - mid);
+          if (dist < bestDist) { bestDist = dist; best = i; }
+        });
+        dots.forEach(function(dot, i) {
+          dot.classList.toggle('active', i === best);
+        });
+      }
+
+      track.addEventListener('scroll', updateActiveDot, { passive: true });
+      updateActiveDot();
+
+      // Recompute on resize so the active dot tracks the layout.
+      var resizeHandler = function() { if (mediaQuery.matches) updateActiveDot(); };
+      window.addEventListener('resize', resizeHandler);
+    });
+  }
+
+  initSwipeCarouselDots();
 
 })();

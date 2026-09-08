@@ -44,16 +44,18 @@
       </nav>
       
       <div class="header-actions">
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-          <i data-lucide="moon" class="icon-moon"></i>
-          <i data-lucide="sun" class="icon-sun"></i>
-        </button>
         <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
           <span></span><span></span><span></span>
         </button>
       </div>
     </div>
   </header>
+
+  <!-- Floating light/dark toggle (just below the header) -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+    <i data-lucide="moon" class="icon-moon"></i>
+    <i data-lucide="sun" class="icon-sun"></i>
+  </button>
 
   <!-- ===== PAGE HERO ===== -->
   <section class="page-hero">
@@ -81,9 +83,12 @@
           <i data-lucide="search"></i>
           <input type="text" id="blogSearch" placeholder="Search posts... (e.g. sleep, herbs, wellness)" aria-label="Search blog posts">
         </div>
-        <div class="blog-sort" id="blogSort" role="group" aria-label="Sort posts">
-          <button type="button" data-sort="latest" class="active">Latest</button>
-          <button type="button" data-sort="earliest">Earliest</button>
+        <div class="blog-sort" id="blogSort" role="group" aria-label="Sort posts by date">
+          <button type="button" data-sort="latest" class="active">Newest first</button>
+          <button type="button" data-sort="earliest">Oldest first</button>
+        </div>
+        <div class="blog-chips" id="blogChips" role="group" aria-label="Filter posts by category">
+          <button type="button" data-category="all" class="active">All posts</button>
         </div>
       </div>
       <p class="blog-results" id="blogResults" aria-live="polite"></p>
