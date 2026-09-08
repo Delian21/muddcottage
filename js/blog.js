@@ -203,6 +203,26 @@
   }
 
   if (sortGroup) {
+    // Sliding active pill: a thumb element glides behind whichever
+    // sort button is active instead of the background hard-swapping.
+    var thumb = document.createElement('span');
+    thumb.className = 'blog-sort-thumb';
+    sortGroup.appendChild(thumb);
+
+    function moveThumb() {
+      var active = sortGroup.querySelector('button.active');
+      if (!active) return;
+      thumb.style.width = active.offsetWidth + 'px';
+      thumb.style.transform = 'translateX(' + active.offsetLeft + 'px)';
+    }
+    moveThumb();
+
+    // Button widths change once the webfont finishes loading, and on resize.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(moveThumb);
+    }
+    window.addEventListener('resize', moveThumb);
+
     sortGroup.querySelectorAll('button').forEach(function(button) {
       button.setAttribute('aria-pressed', button.classList.contains('active') ? 'true' : 'false');
       button.addEventListener('click', function() {
@@ -212,6 +232,7 @@
           b.classList.toggle('active', active);
           b.setAttribute('aria-pressed', active ? 'true' : 'false');
         });
+        moveThumb();
         renderPosts();
       });
     });

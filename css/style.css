@@ -1531,6 +1531,7 @@ footer {
   border-radius: 999px;
   background: var(--cream);
   border: 1px solid rgba(0, 0, 0, 0.08);
+  position: relative;
 }
 
 .blog-sort button {
@@ -1547,13 +1548,32 @@ footer {
   font-weight: 500;
   cursor: pointer;
   transition: all var(--transition);
+  position: relative;
+  z-index: 1;
 }
 
 .blog-sort button:hover { color: var(--green-mid); }
 
+/* The active pill's background is the sliding thumb (js/blog.js), so the
+   pill glides between buttons instead of hard-swapping. */
 .blog-sort button.active {
-  background: var(--green-mid);
   color: var(--text-white);
+}
+
+.blog-sort .blog-sort-thumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  width: 0;
+  border-radius: 999px;
+  background: var(--green-mid);
+  pointer-events: none;
+  transition: transform var(--transition), width var(--transition);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-sort .blog-sort-thumb { transition: none; }
 }
 
 .blog-sort button:focus-visible {
@@ -1568,6 +1588,7 @@ footer {
   align-items: center;
   gap: 8px;
   flex-basis: 100%;
+  margin-bottom: 8px;
 }
 
 .blog-chips button {
@@ -2313,6 +2334,8 @@ html.theme-dark body { background: var(--green-bg); color: var(--text-dark); }
   }
 
   html.theme-dark .blog-sort button { color: rgba(255, 255, 255, 0.55); }
+
+  html.theme-dark .blog-sort button.active { color: var(--text-white); }
 
   html.theme-dark .blog-chips button {
     background: #223021;
