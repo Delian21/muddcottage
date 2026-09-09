@@ -333,6 +333,14 @@ header .container {
   justify-content: space-between;
 }
 
+/* Desktop: push the nav cluster flush toward the right edge of the screen.
+   On narrow screens the container's own side padding takes over. */
+@media (min-width: 1400px) {
+  header .container {
+    padding-right: max(24px, calc((100vw - 100%) / 2 - 60px));
+  }
+}
+
 /* The logo + nav (with its WhatsApp CTA) form one right-aligned cluster;
    space-between then only distributes the gap between the cluster and the
    mobile hamburger, instead of stretching the nav across the whole header. */
