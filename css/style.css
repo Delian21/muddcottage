@@ -2215,7 +2215,7 @@ footer {
   .theme-toggle {
     bottom: auto;
     left: auto;
-    top: calc(64px + env(safe-area-inset-top, 0px));
+    top: calc(80px + env(safe-area-inset-top, 0px));
     right: 16px;
     transform-origin: top right;
   }
