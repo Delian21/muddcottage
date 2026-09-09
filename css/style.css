@@ -331,14 +331,11 @@ header .container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-/* Desktop: push the nav cluster flush toward the right edge of the screen.
-   On narrow screens the container's own side padding takes over. */
-@media (min-width: 1400px) {
-  header .container {
-    padding-right: max(24px, calc((100vw - 100%) / 2 - 60px));
-  }
+  /* The header spans the full viewport (not the 1200px content container)
+     so the nav cluster sits close to the right edge of the screen -
+     ~90px inset on wide monitors, mirroring the logo's inset on the left. */
+  max-width: none;
+  padding: 0 clamp(24px, 4.5vw, 90px);
 }
 
 /* The logo + nav (with its WhatsApp CTA) form one right-aligned cluster;
